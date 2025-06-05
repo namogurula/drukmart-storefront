@@ -1,0 +1,33 @@
+{
+  "name": "Send Welcome Email on Signup",
+  "status": "active",
+  "trigger": {
+    "type": "event",
+    "scope": "items.create",
+    "collection": "signups"
+  },
+  "operations": [
+    {
+      "key": "send_welcome_email",
+      "type": "send-email",
+      "options": {
+        "to": "{{email}}",
+        "subject": "🎉 Welcome to DrukMart!",
+        "body": "Hi {{email}},\n\nThank you for signing up! We'll notify you as soon as we deliver in your Dzongkhag.\n\n🛍️ Visit us: https://drukmart.vercel.app\n\n– Team DrukMart 🇧🇹"
+      }
+    },
+    {
+      "key": "log_email",
+      "type": "create-item",
+      "options": {
+        "collection": "email_logs",
+        "payload": {
+          "to": "{{email}}",
+          "subject": "🎉 Welcome to DrukMart!",
+          "body": "Welcome email sent via flow.",
+          "status": "sent"
+        }
+      }
+    }
+  ]
+}

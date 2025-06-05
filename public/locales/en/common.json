@@ -1,0 +1,36 @@
+//public/locales/en/common.json
+
+{
+  "trending": "Trending",
+  "featured": "Featured",
+  "discounts": "Discounts",
+  "deals": "Top Deals",
+  "blog": "Blog",
+  "cart": "Cart"
+}
+
+
+{
+  "search_placeholder": "Search products...",
+  "all_categories": "All Categories",
+  "puja_items”: "Puja Items",
+  “daily_essentials”: “Daily Essentials",
+  “pickles_ezay”: “Pickles & Ezay",
+  “noodles_pastas”: “Noodles & Pasta",
+  “snacks_bakeries”: “Snacks & Bakeries",
+  “dry_fruits_spices”: “Dry Fruits & Spices",
+  “baby_foods”: “Baby Foods",
+  “baby_cosmetics”: “Baby Cosmetics",
+  “beverages”: “Beverages",
+  “wine_liquor”: “Wine & Liquor",
+  “gift-items”: “Gift Items",
+  “personal_care”: “Personal Care",
+  “cosmetics”: “Cosmetics",
+  “home_care”: “Home Care",
+  “electricals”: “Electricals",
+  “crockeries_utensils”: “Crockeries & Utensils",
+  “clothings”: “Clothings",
+  “footwears”: “Footwears",
+  “Pet Foods”: “Pet Foods"
+
+}

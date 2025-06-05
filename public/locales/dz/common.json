@@ -1,0 +1,38 @@
+//public/locales/dz/common.json
+
+{
+  "trending": "མང་སྤྲོས།",
+  "featured": "འདེམས་བདག",
+  "discounts": "མཇུག་ཆགས།",
+  "deals": "དགོན་མོ་གྱི་རིགས།",
+  "blog": "བྲིས་ཡིག",
+  "cart": "ཉོ་ཆས།"
+}
+
+
+{
+  "search_placeholder": "ཕྱིར་འཚོལ་ ཐོག་ལས་རྩོམ་...",
+  "all_categories": "ཆ་མཉམ་རིགས་",
+  “daily_essentials”: “ཉིན་ལྟར་མཁོ་ཆེ།”,
+  “pickles_ezay”: “ཨེ་རྫས་རིགས།”,
+  “noodles_pastas”: “ཐུག་པ་དང་པསྟ་རིགས།”,
+  “snacks_bakeries”: “བཞེས་རྩམ་དང་མངར་ཟས་རིགས།”,
+  “dry_fruits_spices”: “ཤིང་འབྲས་སྐམ་དང་མངར་ཆ།”,
+  “baby_foods”: “ཨ་ལོ་གི་ཟས་རིགས།”,
+  “baby_cosmetics”: “ཨ་ལོ་གི་སྨན་རིགས།”,
+  “beverages”: “འཐུང་རིགས།”,
+  “wine_liquor”: “ཨ་རག་དང་ཆང་རིགས།”,
+  “gift-items”: “ཕྱོགསམོ་གི་རིགས།”,
+  “personal_care”: “གཅེས་སྐྱོང་གི་རིགས།”,
+  “cosmetics”: “མཛེས་བཟོ་རིགས།”,
+  “home_care”: “ཁྱིམ་གྱི་ཅ་ཆས།”,
+  “electricals”: “གློག་ཆས།”,
+  “crockeries_utensils”: “ཐབ་ཚང་གི་ཅ་ཆས།”,
+  “clothings”: “གོས་རིགས།”,
+  “footwears”: “རྐང་ཆས”,
+  “Pet Foods”: “བྱི་ལི་དང་ཁྱི་གི་ཟས།"
+
+}
+
+
+

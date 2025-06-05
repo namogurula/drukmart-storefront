@@ -1,0 +1,8 @@
+//public/robots.txt
+//Optional: I can help generate dynamic sitemap via script in the future.
+//Replace with your domain if you're using a custom .bt or .com.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://drukmart.vercel.app/sitemap.xml
