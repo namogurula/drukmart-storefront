@@ -4,6 +4,9 @@
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
+const API_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL
+const TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN
+
 export default function ThankYouPage() {
   const params = useSearchParams()
   const [orderId, setOrderId] = useState<string | null>(null)
@@ -11,6 +14,27 @@ export default function ThankYouPage() {
   useEffect(() => {
     const id = params.get("order")
     setOrderId(id)
+
+    const clearCart = async () => {
+      const guest = localStorage.getItem("guest_token")
+      if (!guest) return
+
+      const sessionRes = await fetch(
+        `${API_URL}/items/cart_sessions?filter[guest_token][_eq]=${guest}`,
+        { headers: { Authorization: `Bearer ${TOKEN}` } }
+      )
+      const data = await sessionRes.json()
+      const sessionId = data.data?.[0]?.id
+
+      if (sessionId) {
+        await fetch(`${API_URL}/items/cart_items?filter[cart_session][_eq]=${sessionId}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        })
+      }
+    }
+
+    clearCart()
   }, [params])
 
   return (
