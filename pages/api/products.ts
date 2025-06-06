@@ -1,29 +1,35 @@
 // /pages/api/products.ts
 
-import { NextApiRequest, NextApiResponse } from "next"
+import type { NextApiRequest, NextApiResponse } from "next"
+
+const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL
+const token = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://localhost:8055"
-  const token = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN
-
   try {
-    const response = await fetch(`${directusUrl}/items/products?limit=100&fields=id,name,translations`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const response = await fetch(
+      `${directusUrl}/items/products?filter[status][_eq]=published&limit=10&fields=id,name,price,image.filename_disk`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
 
-    const json = await response.json()
+    const data = await response.json()
 
-    const products = json.data.map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      translations: item.translations || [],
-    }))
+    const products = data?.data?.map((product: any) => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image?.filename_disk
+        ? `${directusUrl}/assets/${product.image.filename_disk}`
+        : null,
+    })) ?? []
 
     res.status(200).json(products)
-  } catch (error) {
-    console.error("Products API error:", error)
-    res.status(500).json({ error: "Internal Server Error" })
+  } catch (err) {
+    console.error("Error fetching products:", err)
+    res.status(500).json({ error: "Unable to fetch products" })
   }
 }
