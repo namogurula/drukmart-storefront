@@ -17,3 +17,9 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
+
+.countdown {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
