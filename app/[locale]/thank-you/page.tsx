@@ -10,10 +10,20 @@ const TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN
 export default function ThankYouPage() {
   const params = useSearchParams()
   const [orderId, setOrderId] = useState<string | null>(null)
+  const [summary, setSummary] = useState<any>(null)
 
   useEffect(() => {
     const id = params.get("order")
     setOrderId(id)
+
+    const fetchSummary = async () => {
+      if (!id) return
+      const res = await fetch(`${API_URL}/items/orders/${id}`, {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      })
+      const data = await res.json()
+      setSummary(data.data)
+    }
 
     const clearCart = async () => {
       const guest = localStorage.getItem("guest_token")
@@ -34,6 +44,7 @@ export default function ThankYouPage() {
       }
     }
 
+    fetchSummary()
     clearCart()
   }, [params])
 
@@ -43,6 +54,20 @@ export default function ThankYouPage() {
       <p className="mb-2 text-lg">Your order has been placed successfully.</p>
       {orderId && (
         <p className="text-sm text-gray-600">Order ID: <strong>{orderId}</strong></p>
+      )}
+      {summary && (
+        <div className="mt-4 text-sm text-left">
+          <p className="font-medium mb-1 text-gray-700">Order Summary:</p>
+          <ul className="list-disc list-inside text-gray-600">
+            {summary.items?.map((item: string, i: number) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+          <p className="mt-2 font-bold">Total: Nu. {summary.total}</p>
+          {summary.delivery_method && (
+            <p className="mt-2">Delivery Method: <strong>{summary.delivery_method}</strong></p>
+          )}
+        </div>
       )}
       <a
         href="/"
