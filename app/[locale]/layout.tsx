@@ -2,7 +2,6 @@
 
 "use client"
 
-import { appWithTranslation } from "next-i18next"
 import { dir } from "i18next"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -29,4 +28,3 @@ export default function LocaleLayout({
   )
 }
 
-export const withTranslation = appWithTranslation
