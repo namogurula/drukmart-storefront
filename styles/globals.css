@@ -1,0 +1,19 @@
+/* styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Styling */
+body {
+  background-color: #f9fafb;
+  font-family: 'Inter', sans-serif;
+}
+
+.animate-blink {
+  animation: blink 1.2s linear infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
