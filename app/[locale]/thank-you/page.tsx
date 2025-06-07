@@ -34,7 +34,33 @@ export default function ThankYouPage() {
       </div>
 
       <p>Delivery Method: <strong>{order.delivery_method === "pickup" ? "Store Pickup" : "Home Delivery"}</strong></p>
-      <p>Total Paid: <strong>Nu. {order.total}</strong></p>
+      
+      <p>Payment Method:{" "}
+        <strong className="capitalize">
+          {order.payment_method === "qr" ? "QR Code Payment" : "Cash on Delivery"}
+        </strong>
+      </p>
+
+      {order.payment_method === "qr" && (
+        <>
+          <p className="text-sm text-gray-600 mb-2">Reference/Journal ID:</p>
+          <div className="bg-gray-50 border px-3 py-2 rounded text-sm text-gray-800 mb-4">
+            {order.payment_reference || "Not Provided"}
+          </div>
+
+          {/* Optional QR Icons */}
+          <div className="flex gap-3 mb-4">
+            {["mbob", "mpay", "epay", "drukpay"].map((bank) => (
+              <img
+                key={bank}
+                src={`/qrcodes/${bank}.png`}
+                alt={bank}
+                className="h-12 w-auto rounded shadow"
+              />
+            ))}
+          </div>
+        </>
+      )}
 
       <p className="mt-6 text-center text-sm text-gray-500">
         Thank you for shopping at DrukMart! 🙏
