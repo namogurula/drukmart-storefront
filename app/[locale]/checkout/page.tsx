@@ -4,6 +4,8 @@
 import { useEffect, useState } from "react"
 import { getGuestToken } from "@/utils/cart"
 import { useRouter } from "next/navigation"
+import DeliveryBoostSuggestion from "@/components/DeliveryBoostSuggestion"
+
 
 const CheckoutPage = () => {
   const [items, setItems] = useState<any[]>([])
@@ -69,6 +71,8 @@ const CheckoutPage = () => {
       >
         {loading ? "Processing..." : "Place Order"}
       </button>
+     
+      <DeliveryBoostSuggestion subtotal={subtotal} />
     </div>
   )
 }
