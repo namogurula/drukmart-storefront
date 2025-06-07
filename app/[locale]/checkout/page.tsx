@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import DeliveryBoostSuggestion from "@/components/DeliveryBoostSuggestion"
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -58,8 +59,7 @@ export default function CheckoutPage() {
               value="pickup"
               checked={deliveryMethod === "pickup"}
               onChange={() => setDeliveryMethod("pickup")}
-            />{" "}
-            Store Pickup (Free)
+            /> Store Pickup (Free)
           </label>
           <label>
             <input
@@ -67,8 +67,7 @@ export default function CheckoutPage() {
               value="home"
               checked={deliveryMethod === "home"}
               onChange={() => setDeliveryMethod("home")}
-            />{" "}
-            Home Delivery ({deliveryFee === 0 ? "Free" : `Nu. ${deliveryFee}`})
+            /> Home Delivery ({deliveryFee === 0 ? "Free" : `Nu. ${deliveryFee}`})
           </label>
         </div>
       </div>
@@ -85,6 +84,8 @@ export default function CheckoutPage() {
       >
         Place Order
       </button>
+
+      <DeliveryBoostSuggestion subtotal={subtotal} />
     </div>
   )
 }
