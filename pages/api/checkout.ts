@@ -1,41 +1,71 @@
 // pages/api/checkout.ts
-import type { NextApiRequest, NextApiResponse } from "next"
-import { v4 as uuidv4 } from "uuid"
+//import { v4 as uuidv4 } from "uuid"
 
-const API_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL
-const TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN
+import type { NextApiRequest, NextApiResponse } from "next"
+
+const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL
+const token = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" })
   }
 
-  try {
-    const { cart } = req.body
-    const order_id = uuidv4()
-    const total = cart.reduce((sum: number, item: any) => sum + item.product.price * item.quantity, 0)
+  const {
+    delivery_method,
+    delivery_fee,
+    payment_method,
+    payment_reference,
+    items = [],
+  } = req.body
 
-    // 1. Create order
-    await fetch(`${API_URL}/items/orders`, {
+  try {
+    const subtotal = items.reduce(
+      (sum: number, item: any) => sum + item.price * item.quantity,
+      0
+    )
+
+    const total = subtotal + (delivery_fee || 0)
+
+    const orderRes = await fetch(`${directusUrl}/items/orders`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TOKEN}`,
       },
       body: JSON.stringify({
-        id: order_id,
-        status: "pending",
+        delivery_method,
+        delivery_fee,
+        payment_method,
+        payment_reference,
         total,
-        items: cart.map((item: any) => `${item.product.name} x ${item.quantity}`),
+        status: "placed",
       }),
     })
 
-    // 2. Optionally: clear cart
-    // (you can delete cart_items here if you want)
+    const orderData = await orderRes.json()
+    const orderId = orderData.data.id
 
-    res.status(200).json({ order_id })
+    // Save line items
+    for (const item of items) {
+      await fetch(`${directusUrl}/items/order_items`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          order: orderId,
+          product: item.product.id,
+          quantity: item.quantity,
+          total: item.price * item.quantity,
+        }),
+      })
+    }
+
+    return res.status(200).json({ order_id: orderId })
   } catch (err) {
-    console.error("Checkout error", err)
-    res.status(500).json({ error: "Order failed" })
+    console.error("Checkout error:", err)
+    return res.status(500).json({ error: "Order failed" })
   }
 }
