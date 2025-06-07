@@ -1,9 +1,9 @@
 // app/[locale]/cart/page.tsx
-//import { getGuestToken } from "@/utils/cart"
 
 "use client"
 
 import { useEffect, useState } from "react"
+import { getGuestToken } from "@/utils/cart"
 import DeliveryBoostSuggestion from "@/components/DeliveryBoostSuggestion"
 
 export default default function CartPage() {
