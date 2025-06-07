@@ -1,91 +1,76 @@
 // app/[locale]/checkout/page.tsx
-//import { getGuestToken } from "@/utils/cart"
-
 "use client"
 
 import { useEffect, useState } from "react"
+import { getGuestToken } from "@/utils/cart"
 import { useRouter } from "next/navigation"
-import DeliveryBoostSuggestion from "@/components/DeliveryBoostSuggestion"
 
-export default function CheckoutPage() {
+const CheckoutPage = () => {
+  const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [delivery, setDelivery] = useState("store")
   const router = useRouter()
-  const [cart, setCart] = useState<any[]>([])
-  const [deliveryMethod, setDeliveryMethod] = useState("pickup")
-  const [deliveryFee, setDeliveryFee] = useState(0)
-
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   useEffect(() => {
-    fetch("/api/cart")
+    const token = getGuestToken()
+    fetch(`/api/cart?guest=${token}`)
       .then((res) => res.json())
-      .then((data) => setCart(data))
+      .then((data) => setItems(data))
   }, [])
 
-  useEffect(() => {
-    if (deliveryMethod === "home") {
-      setDeliveryFee(subtotal >= 2999 ? 0 : 20)
-    } else {
-      setDeliveryFee(0)
-    }
-  }, [deliveryMethod, subtotal])
-
+  const subtotal = items.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0)
+  const deliveryFee = delivery === "home" ? (subtotal >= 2999 ? 0 : 20) : 0
   const total = subtotal + deliveryFee
 
-  const handleSubmit = async () => {
+  const handleOrder = async () => {
+    setLoading(true)
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        delivery_method: deliveryMethod,
-        delivery_fee: deliveryFee,
-        items: cart,
-      }),
+      body: JSON.stringify({ cart: items, delivery_method: delivery, total }),
     })
-
-    const { order_id } = await res.json()
-    router.push(`/thank-you?order=${order_id}`)
+    const data = await res.json()
+    router.push(`/thank-you?order=${data.order_id}`)
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4">Checkout</h1>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-xl font-bold mb-4">Confirm Your Order</h1>
 
-      <div className="mb-4">
-        <label className="font-medium block mb-2">Delivery Method</label>
-        <div className="flex gap-4">
-          <label>
-            <input
-              type="radio"
-              value="pickup"
-              checked={deliveryMethod === "pickup"}
-              onChange={() => setDeliveryMethod("pickup")}
-            /> Store Pickup (Free)
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="home"
-              checked={deliveryMethod === "home"}
-              onChange={() => setDeliveryMethod("home")}
-            /> Home Delivery ({deliveryFee === 0 ? "Free" : `Nu. ${deliveryFee}`})
-          </label>
+      {items.map((item) => (
+        <div key={item.id} className="flex justify-between mb-2">
+          <span>{item.product?.name} x {item.quantity}</span>
+          <span>Nu. {item.product?.price * item.quantity}</span>
         </div>
+      ))}
+
+      <div className="mt-4">
+        <p className="font-medium mb-2">Choose Delivery Method:</p>
+        <label className="block mb-1">
+          <input type="radio" name="delivery" value="store" checked={delivery === "store"} onChange={() => setDelivery("store")} />
+          <span className="ml-2">🏪 Store Pickup (Free)</span>
+        </label>
+        <label>
+          <input type="radio" name="delivery" value="home" checked={delivery === "home"} onChange={() => setDelivery("home")} />
+          <span className="ml-2">🏠 Home Delivery (Nu. {subtotal >= 2999 ? "0" : "20"})</span>
+        </label>
       </div>
 
-      <div className="border-t pt-4 space-y-1">
-        <p>Subtotal: Nu. {subtotal.toFixed(2)}</p>
-        <p>Delivery Fee: Nu. {deliveryFee.toFixed(2)}</p>
-        <p className="font-bold">Total: Nu. {total.toFixed(2)}</p>
+      <div className="text-right font-bold mt-6 mb-6">
+        Subtotal: Nu. {subtotal}<br />
+        Delivery: Nu. {deliveryFee}<br />
+        Total: Nu. {total}
       </div>
 
       <button
-        onClick={handleSubmit}
-        className="mt-6 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+        onClick={handleOrder}
+        disabled={loading}
+        className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
       >
-        Place Order
+        {loading ? "Processing..." : "Place Order"}
       </button>
-
-      <DeliveryBoostSuggestion subtotal={subtotal} />
     </div>
   )
 }
+
+export default CheckoutPage
